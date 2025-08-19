@@ -117,25 +117,37 @@
     </div>
 
     <script>
-        document.getElementById('testForm').addEventListener('submit', async (e) => {
+        document.getElementById('testForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const url = document.getElementById('url').value;
             const resultDiv = document.getElementById('result');
             
-            try {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = url;
-                document.body.appendChild(form);
-                form.submit();
-                document.body.removeChild(form);
-                
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', url, true);
+            
+            xhr.onload = function() {
                 resultDiv.style.display = 'block';
-                resultDiv.textContent = 'Request sent successfully';
-                resultDiv.className = 'success';
-            } catch (error) {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    resultDiv.textContent = 'Request sent successfully';
+                    resultDiv.className = 'success';
+                } else {
+                    resultDiv.textContent = 'Error: ' + xhr.status;
+                    resultDiv.className = 'error';
+                }
+            };
+            
+            xhr.onerror = function() {
                 resultDiv.style.display = 'block';
                 resultDiv.textContent = 'Error sending request';
+                resultDiv.className = 'error';
+            };
+            
+            try {
+                xhr.send();
+                
+            } catch (error) {
+                resultDiv.style.display = 'block';
+                resultDiv.textContent = 'Error: ' + error.message;
                 resultDiv.className = 'error';
             }
         });
