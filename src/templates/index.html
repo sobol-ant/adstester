@@ -123,18 +123,16 @@
             const resultDiv = document.getElementById('result');
             
             try {
-                const response = await fetch('/test', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `url=${encodeURIComponent(url)}`
-                });
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = url;
+                document.body.appendChild(form);
+                form.submit();
+                document.body.removeChild(form);
                 
-                const data = await response.json();
                 resultDiv.style.display = 'block';
-                resultDiv.textContent = data.message;
-                resultDiv.className = data.status === 'success' ? 'success' : 'error';
+                resultDiv.textContent = 'Request sent successfully';
+                resultDiv.className = 'success';
             } catch (error) {
                 resultDiv.style.display = 'block';
                 resultDiv.textContent = 'Error sending request';
