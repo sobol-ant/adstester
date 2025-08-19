@@ -73,6 +73,9 @@
             padding: 10px;
             border-radius: 4px;
             display: none;
+            white-space: pre-wrap;
+            word-break: break-all;
+            font-family: monospace;
         }
 
         .success {
@@ -127,18 +130,27 @@
             
             xhr.onload = function() {
                 resultDiv.style.display = 'block';
+                let resultText = `Status: ${xhr.status} ${xhr.statusText}\n`;
+                
                 if (xhr.status >= 200 && xhr.status < 300) {
-                    resultDiv.textContent = 'Request sent successfully';
                     resultDiv.className = 'success';
+                    resultText += '\nResponse Headers:\n';
+                    resultText += xhr.getAllResponseHeaders();
+                    
+                    if (xhr.responseText) {
+                        resultText += '\nResponse Body:\n';
+                        resultText += xhr.responseText;
+                    }
                 } else {
-                    resultDiv.textContent = 'Error: ' + xhr.status;
                     resultDiv.className = 'error';
                 }
+                
+                resultDiv.textContent = resultText;
             };
             
             xhr.onerror = function() {
                 resultDiv.style.display = 'block';
-                resultDiv.textContent = 'Error sending request';
+                resultDiv.textContent = 'Network Error: Failed to send request';
                 resultDiv.className = 'error';
             };
             
